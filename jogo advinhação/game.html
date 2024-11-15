@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Adivinhação</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <h1>Jogo de Adivinhação</h1>
+        <p>Tente adivinhar o número entre 1 e 100</p>
+        <input type="number" id="guess" placeholder="Digite um número" />
+        <button id="submit">Adivinhar</button>
+        <p id="message"></p>
+        <p>Você tem <span id="attempts">10</span> tentativas restantes</p>
+        <button id="restart" style="display: none;">Reiniciar Jogo</button>
+    </div>
+    <script>
+        let randomNumber;
+let attemptsLeft;
+let isGameOver = false;
+
+const guessInput = document.getElementById("guess");
+const submitButton = document.getElementById("submit");
+const message = document.getElementById("message");
+const attemptsDisplay = document.getElementById("attempts");
+const restartButton = document.getElementById("restart");
+
+function startGame() {
+    randomNumber = Math.floor(Math.random() * 100) + 1; // Número aleatório entre 1 e 100
+    attemptsLeft = 10; // Número de tentativas
+    isGameOver = false;
+    message.textContent = "";
+    attemptsDisplay.textContent = attemptsLeft;
+    restartButton.style.display = "none";
+    guessInput.value = "";
+    guessInput.disabled = false;
+    submitButton.disabled = false;
+}
+
+function checkGuess() {
+    const userGuess = parseInt(guessInput.value);
+    
+    if (isNaN(userGuess)) {
+        message.textContent = "Por favor, insira um número válido!";
+        return;
+    }
+
+    if (userGuess === randomNumber) {
+        message.textContent = "Parabéns, você acertou!";
+        message.style.color = "green";
+        endGame();
+    } else if (userGuess > randomNumber) {
+        attemptsLeft--;
+        message.textContent = "Muito alto! Tente um número menor.";
+        message.style.color = "red";
+    } else {
+        attemptsLeft--;
+        message.textContent = "Muito baixo! Tente um número maior.";
+        message.style.color = "red";
+    }
+
+    attemptsDisplay.textContent = attemptsLeft;
+
+    if (attemptsLeft <= 0 && !isGameOver) {
+        message.textContent = `Você perdeu! O número era ${randomNumber}.`;
+        message.style.color = "red";
+        endGame();
+    }
+}
+
+function endGame() {
+    isGameOver = true;
+    guessInput.disabled = true;
+    submitButton.disabled = true;
+    restartButton.style.display = "inline-block";
+}
+
+submitButton.addEventListener("click", checkGuess);
+
+restartButton.addEventListener("click", startGame);
+
+startGame(); // Inicia o jogo quando a página é carregada
+
+    </script>
+</body>
+</html>
